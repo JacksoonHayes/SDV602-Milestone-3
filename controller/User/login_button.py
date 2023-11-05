@@ -6,12 +6,10 @@ sys.dont_write_bytecode = True
 from view.chat_view import ChatView
 import PySimpleGUI as sg
 
-def accept( event, values,state):
+def accept(event, values, state):
     
     keep_going = True
     if event == "Login":   
-        # Just testing
-        print("Got login - just testing")
 
         # Work with a UserManager object
         from model.user_manager import UserManager
@@ -20,12 +18,10 @@ def accept( event, values,state):
         # get user name and password from the "values" or "state"
         user_name = values['User']
         password = values['Password']
-        print(f"Got User = {user_name} , Password = {password} - just testing")
 
         login_result = a_user_manager.login(user_name,password)
-        print(f"Got login result: {login_result}")
+        print(f"Login result: {login_result}")
 
-        # Testing Chat
         if login_result == "Login Success":
             UserManager.current_screen ="A TEST"
             chat_view = ChatView()
@@ -33,7 +29,7 @@ def accept( event, values,state):
             chat_view.render()
             chat_view.accept_input()
 
-
+        
     else:
         keep_going = True
 

@@ -14,22 +14,26 @@ class LoginView(object):
 
     def set_up_layout(self,**kwargs):
 
-        sg.theme('LightGreen')
-        
+        sg.theme('DarkGrey5')
+        title = ("Century Gothic", 18)
+        sg.set_options(font=('Century Gothic', 10))
         # define the form layout
         
         # one variable per call to sg 
         # if there is a control / input with it add the name to the controls list
-        self.components['User'] = sg.InputText('', key='User',size=(10,30))
-        self.components['Password'] = sg.InputText('', key='Password', password_char='*',size=(10,30))
-
-        self.components['Login'] = sg.Button(button_text="Login",size=(10, 2))
+        self.components['Title'] = sg.T("Login", font=title)
+        self.components['Separator'] = sg.HSeparator(pad=(70, (10, 40)))
+        
+        self.components['User'] = sg.InputText('', key='User',size=(22, 1))
+        self.components['Password'] = sg.InputText('', key='Password', password_char='•',size=(22, 1))
+        
+        self.components['Login'] = sg.Button(button_text="Login", size=(10, 1))
         self.controls += [login_button.accept]
 
-        self.components['RegisterWindow'] = sg.Button(button_text="Register",size=(10, 2))
+        self.components['RegisterWindow'] = sg.Button(button_text="Register",size=(10, 1))
         self.controls += [register_window_button.accept]
 
-        self.components['exit_button'] = sg.Exit(size=(5, 2))        
+        self.components['exit_button'] = sg.Exit(size=(5, 1))        
         self.controls += [exit_button.accept]
 
         row_buttons = [ 
@@ -37,11 +41,12 @@ class LoginView(object):
                         self.components['RegisterWindow'],
                         self.components['exit_button'] 
                       ]
-        self.components['header'] =   sg.Text('Log in', font=('current 18'))
         self.layout = [
-                        
-                        [sg.Text('User Name:'),self.components['User'] ], 
-                        [sg.Text('Password : '),self.components['Password']], 
+                        [self.components['Title']],
+                        [self.components['Separator']],
+                        [sg.Text('Username:'),self.components['User'] ], 
+                        [sg.Text('Password: '),self.components['Password']], 
+                        [sg.Text(pad=(0, 30))],
                         row_buttons
                       ]
 
@@ -49,7 +54,7 @@ class LoginView(object):
 
         # create the form and show it without the plot
         if self.layout != [] :
-            self.window =sg.Window('Log in', self.layout, grab_anywhere=False, finalize=True)
+            self.window =sg.Window('Log in', self.layout, size=(400, 300), grab_anywhere=False, finalize=True, element_justification='c', margins=(0, 20))
   
     def accept_input(self):
 
