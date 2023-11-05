@@ -1,0 +1,14 @@
+https://newsimland.com/~todd/JSON/?tok={"tok":"6c420424-62ad-4218-8b1f-d6cf2115facd","cmd":{"CREATE":"tblTest","EXAMPLE":{"PersonID  PK":"Todd","Score":21}}}
+
+
+https://newsimland.com/~todd/JSON/?tok={"tok":"6c420424-62ad-4218-8b1f-d6cf2115facd","cmd":{"STORE":"tblTest","VALUE":[{"PersonID":"Todd","Score":21},{"PersonID":"Jane","Score":2000}]}}
+
+
+https://newsimland.com/~todd/JSON/?tok={"tok":"6c420424-62ad-4218-8b1f-d6cf2115facd","cmd":{"ALL":"tblTest"}} 
+
+https://newsimland.com/~todd/JSON/?tok={"tok":"6c420424-62ad-4218-8b1f-d6cf2115facd","cmd":{"SELECT":"tblTest","WHERE":"Score > 200"}}
+
+https://newsimland.com/~todd/JSON/?tok={"tok":"6c420424-62ad-4218-8b1f-d6cf2115facd","cmd":{"DROP":"tblTest"}}
+
+
+https://newsimland.com/~todd/JSON/?tok={"tok":"6c420424-62ad-4218-8b1f-d6cf2115facd","cmd":{"STORE":"tblTest","VALUE":[{"PersonID":"Todd","Score":3000}]}}
