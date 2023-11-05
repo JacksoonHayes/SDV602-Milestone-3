@@ -97,7 +97,7 @@ class DES_View(object):
             func = func_tuple[0]
             
             
-            self.window['-MULTILINE-'].update(inspect.getsource(func))  # show source code to function in multiline
+            self.window['-SUMMARY-'].update(inspect.getsource(func))  # show source code to function in multiline
             
             fig = func(**kwargs)                                    # call function to get the figure
             
@@ -117,23 +117,24 @@ class DES_View(object):
 
     def set_up_layout(self,**kwargs):
 
-        sg.theme('LightGreen')
+        sg.theme('DarkGrey4')
         figure_w, figure_h = 650, 650
         # define the form layout
         listbox_values = list(self.fig_dict)
-        print(f"GOT List box {listbox_values}")
+        
+        # print(f"GOT List box {listbox_values}")
+        
         # one variable per call to sg 
         # if there is a control / input with it add the name to the controls list
         self.components['figures_list'] =  sg.Listbox(values=listbox_values, enable_events=True, size=(28, len(listbox_values)), key='-LISTBOX-')
         self.controls += [figure_list_select.accept]
 
-        self.components['text_spacer'] = sg.Text(' ' * 12)
-
         self.components['uploader'] = sg.Button(button_text="Open Uploader",size=(10, 2))
         self.controls += [uploader.accept]
+        
         self.components['new_des'] = sg.Button(button_text="New DES",size=(10, 2))
         self.controls += [new_des.accept]
-        self.components['data_file_name'] = sg.Text('No data')
+        
         self.components['select_file'] = sg.Button(button_text="Open CSV",size=(10, 2))
         self.controls += [open_csv.accept]
 
@@ -142,23 +143,33 @@ class DES_View(object):
 
         col_listbox = [
                         [self.components['figures_list']],
-                        [self.components['text_spacer'],self.components['uploader'],self.components['new_des'],self.components['select_file'],self.components['exit_button'] ]
+                        [self.components['uploader'],self.components['new_des'],
+                        self.components['select_file'],self.components['exit_button']]
                     ]
-        self.components['header'] =   sg.Text('Matplotlib Plot Test', font=('current 18'))
-        self.components['list_box_padding'] =  sg.Col(col_listbox, pad=(5, (3, 330))) 
-        self.components['canvas']   =   sg.Canvas(size=(figure_w, figure_h), key='-CANVAS-') 
-        self.components['MLine']    =  sg.MLine(size=(70, 35), pad=(5, (3, 90)), key='-MULTILINE-')   
+        self.components['list_box_padding'] = sg.Col(col_listbox)
+        
+        self.components['canvas'] = sg.Canvas(size=(figure_w, figure_h), key='-CANVAS-') 
+        self.components['summary'] = sg.MLine(size=(28, 12), key='-SUMMARY-')
+        self.components['chat'] = sg.MLine(size=(28, 13), key='-CHAT-')
+        
+        col_multiline = [
+                        [sg.Text('Summary')],
+                        [self.components['summary']],
+                        [sg.Text('Chat', pad=(0, (21, 0)))],
+                        [self.components['chat']]
+                    ]
+        self.components['summary_chat'] = sg.Col(col_multiline, element_justification='c')
+        
         self.layout = [
-                [self.components['header']],[self.components['data_file_name']],
-                [self.components['list_box_padding'],self.components['canvas'],
-                self.components['MLine']]
+                [self.components['list_box_padding'], self.components['canvas'],
+                self.components['summary_chat']]
                 ]
 
     def render(self):
 
         # create the form and show it without the plot
         if self.layout != [] :
-            self.window =sg.Window('Our Demo Application with - Embedding Matplotlib In PySimpleGUI with **kwargs', self.layout, grab_anywhere=False, finalize=True)
+            self.window =sg.Window('Data Explorer Screen', self.layout, grab_anywhere=False, finalize=True)
             
 
     def accept_input(self):
