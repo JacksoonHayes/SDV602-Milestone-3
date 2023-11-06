@@ -126,10 +126,10 @@ class DES_View(object):
         
         # one variable per call to sg 
         # if there is a control / input with it add the name to the controls list
-        self.components['figures_list'] =  sg.Listbox(values=listbox_values, enable_events=True, size=(28, len(listbox_values)), key='-LISTBOX-')
+        self.components['figures_list'] =  sg.Listbox(values=listbox_values, enable_events=True, size=(24, len(listbox_values)), key='-LISTBOX-')
         self.controls += [figure_list_select.accept]
 
-        self.components['uploader'] = sg.Button(button_text="Open Uploader",size=(10, 2))
+        self.components['uploader'] = sg.Button(button_text="Upload",size=(10, 2))
         self.controls += [uploader.accept]
         
         self.components['new_des'] = sg.Button(button_text="New DES",size=(10, 2))
@@ -140,12 +140,18 @@ class DES_View(object):
 
         self.components['exit_button'] = sg.Exit(size=(5, 2))        
         self.controls += [exit_button.accept]
+        
+        col_navbar = [
+            [self.components['new_des'],
+            sg.Push(),
+            self.components['exit_button']]
+        ]
+        self.components['navbar'] = col_navbar
 
         col_listbox = [
-                        [self.components['figures_list']],
-                        [self.components['uploader'],self.components['new_des'],
-                        self.components['select_file'],self.components['exit_button']]
-                    ]
+            [self.components['figures_list']],
+            [self.components['uploader'], self.components['select_file']]
+        ]
         self.components['list_box_padding'] = sg.Col(col_listbox)
         
         self.components['canvas'] = sg.Canvas(size=(figure_w, figure_h), key='-CANVAS-') 
@@ -153,17 +159,19 @@ class DES_View(object):
         self.components['chat'] = sg.MLine(size=(28, 13), key='-CHAT-')
         
         col_multiline = [
-                        [sg.Text('Summary')],
-                        [self.components['summary']],
-                        [sg.Text('Chat', pad=(0, (21, 0)))],
-                        [self.components['chat']]
-                    ]
+            [sg.Text('Summary')],
+            [self.components['summary']],
+            [sg.Text('Chat', pad=(0, (21, 0)))],
+            [self.components['chat']]
+        ]
         self.components['summary_chat'] = sg.Col(col_multiline, element_justification='c')
         
         self.layout = [
-                [self.components['list_box_padding'], self.components['canvas'],
-                self.components['summary_chat']]
-                ]
+            [self.components['navbar']],
+            [self.components['list_box_padding'],
+            self.components['canvas'],
+            self.components['summary_chat']]
+        ]
 
     def render(self):
 

@@ -12,7 +12,7 @@ def accept( event, values, state):
     if event == 'Open CSV':
        
         
-        file_name = sg.PopupGetFile('Please select file to open', file_types=(("Comma separated value", "*.csv"),)) 
+        file_name = sg.PopupGetFile('Please select a CSV file to open', file_types=(("Comma separated value", "*.csv"),)) 
         if file_name != None :
             view = state['view']
             view.update_data_from_csv(values,file_name)
