@@ -40,7 +40,7 @@ class UpdateView(object) :
 
     def set_up_layout(self,**kwargs):
 
-        sg.theme('LightGreen')
+        sg.theme('DarkGrey5')
         figure_w, figure_h = 650, 650
         # define the form layout
         

@@ -10,7 +10,7 @@ def accept( event, values, state):
     from view.update_file_view import UpdateView
     
     keep_going = True
-    if event == 'Upload':
+    if event == 'Upload CSV':
         des_obj = UpdateView()
         des_obj.explorer_view = state['view']
         des_obj.explorer_values = values

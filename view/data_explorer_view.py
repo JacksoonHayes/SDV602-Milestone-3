@@ -126,13 +126,15 @@ class DES_View(object):
         
         # one variable per call to sg 
         # if there is a control / input with it add the name to the controls list
+        
+        # COL 1
         self.components['figures_list'] =  sg.Listbox(values=listbox_values, enable_events=True, size=(24, len(listbox_values)), key='-LISTBOX-')
         self.controls += [figure_list_select.accept]
 
-        self.components['uploader'] = sg.Button(button_text="Upload",size=(10, 2))
+        self.components['uploader'] = sg.Button(button_text="Upload CSV",size=(10, 2))
         self.controls += [uploader.accept]
         
-        self.components['new_des'] = sg.Button(button_text="New DES",size=(10, 2))
+        self.components['new_des'] = sg.Button(button_text="New DES",size=(15, 2))
         self.controls += [new_des.accept]
         
         self.components['select_file'] = sg.Button(button_text="Open CSV",size=(10, 2))
@@ -141,43 +143,67 @@ class DES_View(object):
         self.components['exit_button'] = sg.Exit(size=(5, 2))        
         self.controls += [exit_button.accept]
         
-        col_navbar = [
-            [self.components['new_des'],
-            sg.Push(),
-            self.components['exit_button']]
-        ]
-        self.components['navbar'] = col_navbar
 
         col_listbox = [
+            [self.components['new_des'], self.components['exit_button']],
+            [sg.Text('', pad=(0, (10, 0)), background_color='#3F3F3F')],
             [self.components['figures_list']],
             [self.components['uploader'], self.components['select_file']]
         ]
-        self.components['list_box_padding'] = sg.Col(col_listbox)
         
-        self.components['canvas'] = sg.Canvas(size=(figure_w, figure_h), key='-CANVAS-') 
+        self.components['list_box_col'] = sg.Col(col_listbox, element_justification='c', background_color='#3F3F3F')
+        
+        # COL 2
+        self.components['canvas'] = sg.Canvas(size=(figure_w, figure_h), key='-CANVAS-')
+        
+        self.components['zoom_in'] = sg.Button("➕", size=(7, 1))        
+        self.controls += [exit_button.accept]
+        
+        self.components['zoom_out'] = sg.Button("➖", size=(7, 1))        
+        self.controls += [exit_button.accept]
+        
+        self.components['pan_left'] = sg.Button("<", size=(7, 1))        
+        self.controls += [exit_button.accept]
+        
+        self.components['pan_right'] = sg.Button(">", size=(7, 1))        
+        self.controls += [exit_button.accept]
+        
+        col_canvas = [
+            [self.components['canvas']],
+            [self.components['pan_left'],
+            sg.Text('', pad=((30, 0), 0), background_color='#3F3F3F'),
+            self.components['zoom_out'],
+            self.components['zoom_in'],
+            sg.Text('', pad=((0, 30), 0), background_color='#3F3F3F'),
+            self.components['pan_right']]
+        ]
+        
+        self.components['canvas_col'] = sg.Col(col_canvas, element_justification='c', background_color='#3F3F3F')
+        
+        # COL 3
         self.components['summary'] = sg.MLine(size=(28, 12), key='-SUMMARY-')
         self.components['chat'] = sg.MLine(size=(28, 13), key='-CHAT-')
         
         col_multiline = [
-            [sg.Text('Summary')],
+            [sg.Text('Summary', background_color='#3F3F3F')],
             [self.components['summary']],
-            [sg.Text('Chat', pad=(0, (21, 0)))],
+            [sg.Text('Chat', pad=(0, (21, 0)), background_color='#3F3F3F')],
             [self.components['chat']]
         ]
-        self.components['summary_chat'] = sg.Col(col_multiline, element_justification='c')
+        self.components['summary_chat_col'] = sg.Col(col_multiline, element_justification='c', background_color='#3F3F3F')
+        
         
         self.layout = [
-            [self.components['navbar']],
-            [self.components['list_box_padding'],
-            self.components['canvas'],
-            self.components['summary_chat']]
+            [self.components['list_box_col'],
+            self.components['canvas_col'],
+            self.components['summary_chat_col']]
         ]
 
     def render(self):
 
         # create the form and show it without the plot
         if self.layout != [] :
-            self.window =sg.Window('Data Explorer Screen', self.layout, grab_anywhere=False, finalize=True)
+            self.window =sg.Window('Data Explorer Screen', self.layout, grab_anywhere=False, finalize=True, background_color='#8A8A8A')
             
 
     def accept_input(self):
