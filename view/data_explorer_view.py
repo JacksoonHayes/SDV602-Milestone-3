@@ -6,6 +6,7 @@ import controller.DES.exit_button as exit_button
 import controller.DES.figure_list_select as figure_list_select
 import controller.DES.new_des as new_des
 import controller.DES.open_csv as open_csv
+import controller.DES.pan_left as pan_left
 import controller.Upload.uploader as uploader
 import PySimpleGUI as sg
 import inspect
@@ -166,7 +167,7 @@ class DES_View(object):
         self.controls += [exit_button.accept]
         
         self.components['pan_right'] = sg.Button(">", size=(7, 1))        
-        self.controls += [exit_button.accept]
+        self.controls += [pan_left.accept]
         
         col_canvas = [
             [self.components['canvas']],
