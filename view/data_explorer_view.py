@@ -117,7 +117,7 @@ class DES_View(object):
 
     def set_up_layout(self,**kwargs):
 
-        sg.theme('DarkGrey4')
+        sg.theme('DarkBrown6')
         figure_w, figure_h = 650, 650
         # define the form layout
         listbox_values = list(self.fig_dict)
