@@ -3,7 +3,7 @@ Login controller
 """
 import sys
 sys.dont_write_bytecode = True
-from view.chat_view import ChatView
+from view.data_explorer_view import DES_View
 import PySimpleGUI as sg
 
 def accept(event, values, state):
@@ -24,10 +24,10 @@ def accept(event, values, state):
 
         if login_result == "Login Success":
             UserManager.current_screen ="A TEST"
-            chat_view = ChatView()
-            chat_view.set_up_layout()
-            chat_view.render()
-            chat_view.accept_input()
+            des_obj = DES_View()
+            des_obj.set_up_layout()
+            des_obj.render()
+            des_obj.accept_input()
 
         
     else:

@@ -27,6 +27,7 @@ sys.dont_write_bytecode = True
 import matplotlib.pyplot as plt
 import numpy as np
 
+
 def line_plot(**kwargs):
     """
     Automagically takes a list of Y values (data) and figures out the X axis.
