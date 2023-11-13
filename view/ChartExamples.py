@@ -35,7 +35,7 @@ def line_plot(**kwargs):
     Args 
           **kwargs lets you pass arguments into this function 
     """
-    data_values = [-1, -4.5, 16, 23]
+    data_values = [0, 2, 0, 4, 0, 6]
     if 'data' in kwargs:
         data_values = kwargs['data']
     plt.plot(data_values)
