@@ -20,7 +20,7 @@ class ChatView(object):
         self.controls = []
         self.values = None
         # The following will only work if we have logged in!
-        self.JsnDrop = UserManager.this_user_manager.jsnDrop
+        # self.JsnDrop = UserManager.this_user_manager.jsnDrop
         # Thread for chat
         self.chat_count = 0
         self.exit_event = threading.Event()
@@ -81,73 +81,57 @@ class ChatView(object):
                     # Send the event back to the window
                     self.window.write_event_value('-CHATTHREAD-', Update_Messages)
         # The Thread stops - no loop - when the event is caught by the Window it starts a new long task
-
-         
-
-                                       
-                     
+                
+                
+                
+                
     def set_up_layout(self,**kwargs):
-
-        sg.theme('LightGreen')
         
         # define the form layout
         
         # one variable per call to sg 
         # if there is a control / input with it add the name to the controls list
-        self.components['ChatDisplay'] = sg.Multiline('CHATTY',autoscroll=True,disabled=True, key='ChatDisplay',size=(20,10))
-        self.components['Message'] =sg.InputText('Type a message', key='Message',size=(20,50))
-        self.components['Send'] = sg.Button('Send', key='Send', size=(10,2))
+        self.components['ChatDisplay'] = sg.Multiline(autoscroll=True,disabled=True, key='ChatDisplay',size=(20,10))
+        self.components['Message'] =sg.Input(key='Message',size=(20,50))
+        self.components['Send'] = sg.Button('Send', key='Send', size=(5,1))
         self.controls += [chat_button.accept]
 
-
-        self.components['exit_button'] = sg.Exit(size=(5, 2))        
-        self.controls += [exit_button.accept]
-
-        row_buttons = [ 
-                        self.components['exit_button'] 
-                      ]
-        self.components['header'] =   sg.Text('Log in', font=('current 18'))
         self.layout = [
                         
                         [self.components['ChatDisplay'] ], 
-                        [self.components['Message']],
-                        [self.components['Send']], 
-                        row_buttons
+                        [self.components['Message'], self.components['Send']],
                       ]
 
-    def render(self):
-        if self.layout != [] :
-            self.window =sg.Window('Chat', self.layout, grab_anywhere=False, finalize=True)
-            # Need a window before chat
-            self.set_up_chat_thread()
+    # def render(self):
+    #     if self.layout != [] :
+    #         self.window =sg.Window('Chat', self.layout, grab_anywhere=False, finalize=True)
+    #         # Need a window before chat
+    #         self.set_up_chat_thread()
   
-    def accept_input(self):
+    # def accept_input(self):
 
-        if self.window != None :
-            keep_going = True
+    #     if self.window != None :
+    #         keep_going = True
             
-            while keep_going == True:
-                event, values = self.window.read()
-                if event == "Exit" :
-                    UserManager.stop_thread = True
-                    
+    #         while keep_going == True:
+    #             event, values = self.window.read()
                    
-                elif event == "-CHATTHREAD-" and not UserManager.stop_thread:
-                    # This is where the event come back to the window from the Thread
+    #             if event == "-CHATTHREAD-" and not UserManager.stop_thread:
+    #                 # This is where the event come back to the window from the Thread
                     
-                    # Lock until the Window is updated
-                    UserManager.stop_thread = True
+    #                 # Lock until the Window is updated
+    #                 UserManager.stop_thread = True
 
-                    self.window['ChatDisplay'].Update(values[event])
-                    # This should always be True here
-                    if UserManager.stop_thread:
-                        # Unlock so we can start another long task thread
-                        UserManager.stop_thread = False
-                        # Start another long task thread
-                        self.set_up_chat_thread()
+    #                 self.window['ChatDisplay'].Update(values[event])
+    #                 # This should always be True here
+    #                 if UserManager.stop_thread:
+    #                     # Unlock so we can start another long task thread
+    #                     UserManager.stop_thread = False
+    #                     # Start another long task thread
+    #                     self.set_up_chat_thread()
 
 
-                for accept_control in self.controls:
-                    keep_going = accept_control(event,values,{'view':self})
-            self.window.close()
+    #             for accept_control in self.controls:
+    #                 keep_going = accept_control(event,values,{'view':self})
+    #         self.window.close()
         

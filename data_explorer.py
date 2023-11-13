@@ -37,6 +37,11 @@ if __name__ == "__main__" :
     des_obj.render()
     des_obj.accept_input()
     
+    # chat_view = ChatView()
+    # chat_view.set_up_layout()
+    # chat_view.render()
+    # chat_view.accept_input()
+    
     #des_obj.accept_input()
     
     # drop_service = jsnDrop("66d863d6-9ae2-43a2-b8b4-fac8deab3689", "https://newsimland.com/~todd/JSON")

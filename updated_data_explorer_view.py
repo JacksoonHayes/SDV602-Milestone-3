@@ -8,9 +8,7 @@ import controller.DES.new_des as new_des
 import controller.DES.open_csv as open_csv
 import controller.DES.pan_left as pan_left
 import controller.DES.pan_right as pan_right
-import controller.User.chat_button as chat_button
-from view.chat_view import ChatView
-from model.user_manager import UserManager 
+import view.chat_view as chat_view
 import controller.Upload.uploader as uploader
 import PySimpleGUI as sg
 import inspect
@@ -118,10 +116,12 @@ class DES_View(object):
             self.figure_agg = self.draw_figure(self.window['-CANVAS-'].TKCanvas, fig)  # draw the figure
     
 
+
+
     def set_up_layout(self,**kwargs):
-        
+
         sg.theme('DarkBrown6')
-        figure_w, figure_h = 640, 480
+        figure_w, figure_h = 650, 650
         # define the form layout
         listbox_values = list(self.fig_dict)
         
@@ -185,17 +185,14 @@ class DES_View(object):
         
         # COL 3
         self.components['summary'] = sg.MLine(size=(28, 12), key='-SUMMARY-')
-        self.components['ChatDisplay'] = sg.Multiline(autoscroll=True,disabled=True, key='ChatDisplay',size=(28,13))
-        self.components['Message'] =sg.Input(key='Message',size=(20,10))
-        self.components['Send'] = sg.Button('Send', key='Send', size=(5,1))
-        self.controls += [chat_button.accept]
-          
+        # self.components['chat'] = sg.MLine(size=(28, 13), key='-CHAT-')
+        self.chat_view = chat_view.ChatView()
+        
         col_multiline = [
             [sg.Text('Summary', background_color='#3F3F3F')],
             [self.components['summary']],
             [sg.Text('Chat', pad=(0, (21, 0)), background_color='#3F3F3F')],
-            [self.components['ChatDisplay']], 
-            [self.components['Message'], self.components['Send']]   
+            [self.chat_view.layout]
         ]
         self.components['summary_chat_col'] = sg.Col(col_multiline, element_justification='c', background_color='#3F3F3F')
         
@@ -220,25 +217,10 @@ class DES_View(object):
                 
                 while keep_going == True:
                     event, values = self.window.read()
-                    
-                    if event == sg.WIN_CLOSED:
-                        keep_going = False
-                        break
-                    
-                    if event == "-CHATTHREAD-" and not UserManager.stop_thread:
-                        # This is where the event come back to the window from the Thread
-                        
-                        # Lock until the Window is updated
-                        UserManager.stop_thread = True
-
-                        self.window['ChatDisplay'].Update(values[event])
-                        # This should always be True here
-                        if UserManager.stop_thread:
-                            # Unlock so we can start another long task thread
-                            UserManager.stop_thread = False
-                            # Start another long task thread
-                            self.set_up_chat_thread()
-                            
                     for accept_control in self.controls:
                         keep_going = accept_control(event,values,{'view':self})
                 self.window.close()
+
+
+
+     
