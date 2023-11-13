@@ -186,7 +186,7 @@ class DES_View(object):
         # COL 3
         self.components['summary'] = sg.MLine(size=(28, 12), key='-SUMMARY-')
         self.components['ChatDisplay'] = sg.Multiline(autoscroll=True,disabled=True, key='ChatDisplay',size=(28,13))
-        self.components['Message'] =sg.Input(key='Message',size=(20,10))
+        self.components['Message'] =sg.Input(key='Message',size=(22,1))
         self.components['Send'] = sg.Button('Send', key='Send', size=(5,1))
         self.controls += [chat_button.accept]
           
@@ -237,7 +237,7 @@ class DES_View(object):
                             # Unlock so we can start another long task thread
                             UserManager.stop_thread = False
                             # Start another long task thread
-                            self.set_up_chat_thread()
+                            ChatView.set_up_chat_thread()
                             
                     for accept_control in self.controls:
                         keep_going = accept_control(event,values,{'view':self})

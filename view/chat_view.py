@@ -81,9 +81,7 @@ class ChatView(object):
                     # Send the event back to the window
                     self.window.write_event_value('-CHATTHREAD-', Update_Messages)
         # The Thread stops - no loop - when the event is caught by the Window it starts a new long task
-                
-                
-                
+                                
                 
     def set_up_layout(self,**kwargs):
         
@@ -108,30 +106,30 @@ class ChatView(object):
     #         # Need a window before chat
     #         self.set_up_chat_thread()
   
-    # def accept_input(self):
+    def accept_input(self):
 
-    #     if self.window != None :
-    #         keep_going = True
+        if self.window != None :
+            keep_going = True
             
-    #         while keep_going == True:
-    #             event, values = self.window.read()
+            while keep_going == True:
+                event, values = self.window.read()
                    
-    #             if event == "-CHATTHREAD-" and not UserManager.stop_thread:
-    #                 # This is where the event come back to the window from the Thread
+                if event == "-CHATTHREAD-" and not UserManager.stop_thread:
+                    # This is where the event come back to the window from the Thread
                     
-    #                 # Lock until the Window is updated
-    #                 UserManager.stop_thread = True
+                    # Lock until the Window is updated
+                    UserManager.stop_thread = True
 
-    #                 self.window['ChatDisplay'].Update(values[event])
-    #                 # This should always be True here
-    #                 if UserManager.stop_thread:
-    #                     # Unlock so we can start another long task thread
-    #                     UserManager.stop_thread = False
-    #                     # Start another long task thread
-    #                     self.set_up_chat_thread()
+                    self.window['ChatDisplay'].Update(values[event])
+                    # This should always be True here
+                    if UserManager.stop_thread:
+                        # Unlock so we can start another long task thread
+                        UserManager.stop_thread = False
+                        # Start another long task thread
+                        self.set_up_chat_thread()
 
 
-    #             for accept_control in self.controls:
-    #                 keep_going = accept_control(event,values,{'view':self})
-    #         self.window.close()
+                for accept_control in self.controls:
+                    keep_going = accept_control(event,values,{'view':self})
+            self.window.close()
         
