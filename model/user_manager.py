@@ -33,6 +33,7 @@ class UserManager(object):
         # SCHEMA Make sure the tables are  CREATED - jsnDrop does not wipe an existing table if it is recreated
         result = self.jsnDrop.create("tblUser",{"PersonID PK":"A_LOOONG_NAME"+('X'*50),
                                                 "Password":"A_LOOONG_PASSWORD"+('X'*50),
+                                                "DESID":"A_LOOONG_DES_ID"+('X'*50),
                                                 "Status":"STATUS_STRING"})
 
         result = self.jsnDrop.create("tblChat",{"PersonID PK":"A_LOOONG_NAME"+('X'*50),
@@ -51,32 +52,11 @@ class UserManager(object):
             UserManager.currentUser = user_id
             UserManager.current_status = 'Logged Out'
 
-            # Initialize a DES screen for the user
-            des_screen_id = self.initialize_des_screen(user_id)
-            if des_screen_id is None:
-                UserManager.current_screen = des_screen_id
-
             result = "Registration Success"
         else:
             result = "User Already Exists"
 
         return result
-    
-    def initialize_des_screen(self, user_id):
-        # Logic to create a new DES screen for the user
-        # For simplicity, each DES screen is identified by a unique ID
-
-        des_screen_id = f"DES_{user_id}_{int(self.now_time_stamp())}"
-
-        # Store the new DES screen in the database
-        result = self.jsnDrop.store("tblDESScreens", [{'UserID': user_id, 'DESScreenID': des_screen_id}])
-
-        # Check if the storage was successful and return the DES screen ID
-        if "ERROR" not in result:
-            return des_screen_id
-        else:
-            return None
-
 
     def login(self, user_id, password):
         result = None
