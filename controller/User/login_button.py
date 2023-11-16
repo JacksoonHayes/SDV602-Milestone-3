@@ -23,7 +23,7 @@ def accept(event, values, state):
         print(f"Login result: {login_result}")
 
         if login_result == "Login Success":
-            UserManager.current_screen ="A TEST"
+            UserManager.current_screen = "DES1"
             des_obj = DES_View()
             des_obj.set_up_layout()
             des_obj.render()

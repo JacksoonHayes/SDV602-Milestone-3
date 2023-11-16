@@ -3,8 +3,6 @@ Uploader button controller
 """
 import sys
 sys.dont_write_bytecode = True
-import PySimpleGUI as sg
-from model.model import Model
 
 def accept( event, values, state):
     from view.update_file_view import UpdateView

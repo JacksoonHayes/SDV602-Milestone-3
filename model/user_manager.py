@@ -20,7 +20,10 @@ class UserManager(object):
         #timestamp_str = f"{time_now.tm_year}-{time_now.tm_mon}-{time_now.tm_mday} {time_now.tm_hour}:{time_now.tm_min}:{time_now.tm_sec}"
         time_now.timestamp()
         return time_now.timestamp()
- 
+    
+    def has_active_screen(self, user_id):
+        # Check if the user already has an active screen
+        return user_id in self.active_screens
 
     def __init__(self) -> None:
         super().__init__()
@@ -41,17 +44,39 @@ class UserManager(object):
         # self.test_api()
 
     def register(self, user_id, password):
-        api_result = self.jsnDrop.select("tblUser",f"PersonID = '{user_id}'") # Danger SQL injection attack via user_id?? Is JsnDrop SQL injection attack safe??
-        if( "DATA_ERROR" in self.jsnDrop.jsnStatus): # we get a DATA ERROR on an empty list - this is a design error in jsnDrop
-            # Is this where our password should be SHA'ed !?
-            result = self.jsnDrop.store("tblUser",[{'PersonID':user_id,'Password':password,'Status':'Registered'}])
+        api_result = self.jsnDrop.select("tblUser", f"PersonID = '{user_id}'")
+        if "DATA_ERROR" in self.jsnDrop.jsnStatus:
+            # Store user details
+            result = self.jsnDrop.store("tblUser", [{'PersonID': user_id, 'Password': password, 'Status': 'Registered'}])
             UserManager.currentUser = user_id
             UserManager.current_status = 'Logged Out'
+
+            # Initialize a DES screen for the user
+            des_screen_id = self.initialize_des_screen(user_id)
+            if des_screen_id is None:
+                UserManager.current_screen = des_screen_id
+
             result = "Registration Success"
         else:
             result = "User Already Exists"
 
         return result
+    
+    def initialize_des_screen(self, user_id):
+        # Logic to create a new DES screen for the user
+        # For simplicity, each DES screen is identified by a unique ID
+
+        des_screen_id = f"DES_{user_id}_{int(self.now_time_stamp())}"
+
+        # Store the new DES screen in the database
+        result = self.jsnDrop.store("tblDESScreens", [{'UserID': user_id, 'DESScreenID': des_screen_id}])
+
+        # Check if the storage was successful and return the DES screen ID
+        if "ERROR" not in result:
+            return des_screen_id
+        else:
+            return None
+
 
     def login(self, user_id, password):
         result = None
@@ -99,17 +124,17 @@ class UserManager(object):
         return result
 
     def get_chat(self):
-         result = None
 
-         if UserManager.current_status == "Logged In":
+         if UserManager.current_status == "Logged In" and UserManager.current_screen is not None:
             des_screen = UserManager.current_screen  
             if not(des_screen is None):
                 api_result = self.jsnDrop.select("tblChat",f"DESNumber = '{des_screen}'")
                 if not ('DATA_ERROR' in api_result) :
                     UserManager.chat_list = self.jsnDrop.jsnResult
                     result = UserManager.chat_list
-
-         return result
+                    return result
+                else:
+                    return None
          
     def logout(self):
         result = "Must be 'Logged In' to 'LogOut' "
