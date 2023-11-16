@@ -34,13 +34,13 @@ class DES_View(object):
         self.controls = []
         self.my_lastfig = None
         self.fig_dict = {'Line Plot':(ce.line_plot,{}),'Plot Dots(discrete plot)':(ce.discrete_plot,{}),
-    'Name and Label':(ce.names_labels,{}),'Plot many Lines':(ce.multiple_plots,{}),
-    'Bar Chart':(ce.bar_chart,{}),'Histogram':(ce.histogram,{'title':'Our Histogram Name'}),
-    'Scatter Plots':(ce.scatter_plots,{}),'Stack Plot':(ce.stack_plot,{}),
-    'Pie Chart 1':(ce.pie_chart1,{}),
-    'Pie Chart 2':(ce.pie_chart2,{})}
+                        'Name and Label':(ce.names_labels,{}),'Plot many Lines':(ce.multiple_plots,{}),
+                        'Bar Chart':(ce.bar_chart,{}),'Histogram':(ce.histogram,{'title':'Our Histogram Name'}),
+                        'Scatter Plots':(ce.scatter_plots,{}),'Stack Plot':(ce.stack_plot,{}),
+                        'Pie Chart 1':(ce.pie_chart1,{}), 'Pie Chart 2':(ce.pie_chart2,{})}
         DES_View.current_des +=1 
-        DES_View.des_list += [self]
+        des_list_text = f"DES {DES_View.current_des}"
+        DES_View.des_list += [des_list_text]
 
     def have_selected_graph(self,values):
         return len(values['-LISTBOX-']) > 0

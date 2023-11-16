@@ -15,4 +15,6 @@ def accept( event, values, state):
         des_obj.set_up_layout()
         des_obj.render()
         des_obj.accept_input()
+        print(DES_View.current_des)
+        print(DES_View.des_list)
     return keep_going 
