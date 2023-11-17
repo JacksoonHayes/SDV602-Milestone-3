@@ -21,6 +21,7 @@ class jsnDrop(object):
         self.jsnDropCreate = self.decode('{"CREATE":"aTableName","EXAMPLE":{}}')
         self.jsnDropStore  = self.decode('{"STORE":"aTableName","VALUE":[]}')
         self.jsnDropAll    = self.decode('{"ALL":"aTableName"}')
+        self.jsnDropAllWhere    = self.decode('{"ALL":"aTableName","WHERE":"aField = b"}')
         self.jsnDropSelect = self.decode('{"SELECT":"aTableName","WHERE":"aField = b"}')
         self.jsnDropDelete = self.decode('{"DELETE":"aTableName","WHERE":"aField = b"}')
         self.jsnDropDrop   = self.decode('{"DROP":"aTableName"}')
@@ -63,6 +64,12 @@ class jsnDrop(object):
         command = self.jsnDropAll
         command["ALL"] = table_name
         return self.jsnDropApi(command)
+    
+    def allWhere(self, table_name, where):
+        command = self.jsnDropAllWhere
+        command["ALL"] = table_name
+        command["WHERE"] = where
+        return self.jsnDropApi(command)
 
     def select(self, table_name, where):
         command = self.jsnDropSelect
@@ -80,6 +87,8 @@ class jsnDrop(object):
         command = self.jsnDropDrop
         command["DROP"] = table_name
         return self.jsnDropApi(command)
+
+        
 
     
 

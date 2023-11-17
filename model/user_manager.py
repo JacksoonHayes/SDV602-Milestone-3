@@ -3,6 +3,7 @@ from time import gmtime  #  gmt_time returns UTC time struct
 from datetime import datetime
 
 class UserManager(object):
+    user_screen = 1
     current_user = None
     current_pass = None
     current_status = None
@@ -20,10 +21,6 @@ class UserManager(object):
         #timestamp_str = f"{time_now.tm_year}-{time_now.tm_mon}-{time_now.tm_mday} {time_now.tm_hour}:{time_now.tm_min}:{time_now.tm_sec}"
         time_now.timestamp()
         return time_now.timestamp()
-    
-    def has_active_screen(self, user_id):
-        # Check if the user already has an active screen
-        return user_id in self.active_screens
 
     def __init__(self) -> None:
         super().__init__()
@@ -33,7 +30,7 @@ class UserManager(object):
         # SCHEMA Make sure the tables are  CREATED - jsnDrop does not wipe an existing table if it is recreated
         result = self.jsnDrop.create("tblUser",{"PersonID PK":"A_LOOONG_NAME"+('X'*50),
                                                 "Password":"A_LOOONG_PASSWORD"+('X'*50),
-                                                "DESID":"A_LOOONG_DES_ID"+('X'*50),
+                                                "DESNumber":"A_LOOONG_DES_ID"+('X'*50),
                                                 "Status":"STATUS_STRING"})
 
         result = self.jsnDrop.create("tblChat",{"PersonID PK":"A_LOOONG_NAME"+('X'*50),
@@ -47,8 +44,17 @@ class UserManager(object):
     def register(self, user_id, password):
         api_result = self.jsnDrop.select("tblUser", f"PersonID = '{user_id}'")
         if "DATA_ERROR" in self.jsnDrop.jsnStatus:
-            # Store user details
-            result = self.jsnDrop.store("tblUser", [{'PersonID': user_id, 'Password': password, 'Status': 'Registered'}])
+            # Generate a DES number
+            record_count = len(self.jsnDrop.allWhere("tblUser", f"Status = 'Registered'"))
+            if record_count == 41:
+                des_number = 1
+            else:
+                des_number = record_count + 1
+            
+
+            # Store user details with des_screen
+            result = self.jsnDrop.store("tblUser", [{'PersonID': user_id, 'Password': password,
+                                                    'Status': 'Registered', "DESNumber": f"DES_{des_number}"}])
             UserManager.currentUser = user_id
             UserManager.current_status = 'Logged Out'
 
@@ -57,6 +63,7 @@ class UserManager(object):
             result = "User Already Exists"
 
         return result
+
 
     def login(self, user_id, password):
         result = None
@@ -174,7 +181,7 @@ def testUserManager():
     print(f"LOGIN STATUS: {login_status}")
 
     # when logged in set current screen
-    set_screen_status = a_user_manager.set_current_DES("DES1")  
+    set_screen_status = a_user_manager.set_current_DES("DES_1")  
     print(f"SET CURRENT SCREEN: {set_screen_status}") 
 
     # when logged in send a chat   

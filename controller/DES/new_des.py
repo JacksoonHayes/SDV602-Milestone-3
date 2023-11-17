@@ -21,5 +21,5 @@ def accept( event, values, state):
             des_obj.render()
             des_obj.accept_input()
             # Update the user's active screen status
-            user_manager.update_active_screen(state['current_user'], des_obj)
+            user_manager.set_current_DES(des_obj)
     return keep_going

@@ -4,6 +4,7 @@ Login controller
 import sys
 sys.dont_write_bytecode = True
 from view.data_explorer_view import DES_View
+from model.network.jsn_drop_service import jsnDrop
 import PySimpleGUI as sg
 
 def accept(event, values, state):
@@ -21,9 +22,14 @@ def accept(event, values, state):
 
         login_result = a_user_manager.login(user_name,password)
         print(f"Login result: {login_result}")
+        
+        
+        <<<<<<<<<<<< function that selects user des number record self.jsnDrop.select("tblUser", f"PersonID = '{user_id}'") >>>>>>>>>>>>>>>>
+        put it in user_screen below.
 
         if login_result == "Login Success":
-            UserManager.current_screen = "DES1"
+            user_screen = 
+            UserManager.current_screen = 
             des_obj = DES_View()
             des_obj.set_up_layout()
             des_obj.render()
