@@ -24,16 +24,19 @@ def accept(event, values, state):
         print(f"Login result: {login_result}")
         
         
-        <<<<<<<<<<<< function that selects user des number record self.jsnDrop.select("tblUser", f"PersonID = '{user_id}'") >>>>>>>>>>>>>>>>
-        put it in user_screen below.
+        # <<<<<<<<<<<< function that selects user des number record self.jsnDrop.select("tblUser", f"PersonID = '{user_id}'") >>>>>>>>>>>>>>>>
+        # put it in user_screen below.
 
         if login_result == "Login Success":
-            user_screen = 
-            UserManager.current_screen = 
+            # user_screen = 
+            # UserManager.current_screen =
+            
             des_obj = DES_View()
             des_obj.set_up_layout()
             des_obj.render()
             des_obj.accept_input()
+            UserManager.set_current_DES(des_obj)
+            des_obj.des_list.append(des_obj)
 
         
     else:

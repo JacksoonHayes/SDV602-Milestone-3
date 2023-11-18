@@ -10,6 +10,7 @@ import controller.DES.pan_left as pan_left
 import controller.DES.pan_right as pan_right
 import controller.User.chat_button as chat_button
 from view.chat_view import ChatView
+import view.chat_view as chat_view
 from model.user_manager import UserManager 
 import controller.Upload.uploader as uploader
 import PySimpleGUI as sg
@@ -39,8 +40,7 @@ class DES_View(object):
                         'Scatter Plots':(ce.scatter_plots,{}),'Stack Plot':(ce.stack_plot,{}),
                         'Pie Chart 1':(ce.pie_chart1,{}), 'Pie Chart 2':(ce.pie_chart2,{})}
         DES_View.current_des +=1 
-        des_list_text = f"DES {DES_View.current_des}"
-        DES_View.des_list += [des_list_text]
+        DES_View.des_list += [self]
 
     def have_selected_graph(self,values):
         return len(values['-LISTBOX-']) > 0
@@ -211,6 +211,7 @@ class DES_View(object):
         # create the form and show it without the plot
         if self.layout != [] :
             self.window =sg.Window('Data Explorer Screen', self.layout, grab_anywhere=False, finalize=True, background_color='#8A8A8A')
+        ChatView().set_up_chat_thread()
             
 
     def accept_input(self):

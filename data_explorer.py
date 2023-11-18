@@ -45,14 +45,14 @@ if __name__ == "__main__" :
     
     #des_obj.accept_input()
     
-    drop_service = jsnDrop("66d863d6-9ae2-43a2-b8b4-fac8deab3689", "https://newsimland.com/~todd/JSON")
-    drop_service.drop("tblUser")
-    drop_service.drop("tblChat")
+    # drop_service = jsnDrop("66d863d6-9ae2-43a2-b8b4-fac8deab3689", "https://newsimland.com/~todd/JSON")
+    # drop_service.drop("tblUser")
+    # drop_service.drop("tblChat")
 
-    # login_view = LoginView()
-    # login_view.set_up_layout()
-    # login_view.render()
-    # login_view.accept_input()
+    login_view = LoginView()
+    login_view.set_up_layout()
+    login_view.render()
+    login_view.accept_input()
     
     # user_manager.testUserManager()
 

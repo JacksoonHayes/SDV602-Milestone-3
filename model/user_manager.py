@@ -3,7 +3,6 @@ from time import gmtime  #  gmt_time returns UTC time struct
 from datetime import datetime
 
 class UserManager(object):
-    user_screen = 1
     current_user = None
     current_pass = None
     current_status = None
@@ -15,6 +14,7 @@ class UserManager(object):
     thread_lock = False
     jsn_tok = "66d863d6-9ae2-43a2-b8b4-fac8deab3689"
     latest_time = None
+    DES_screen = None
 
     def now_time_stamp(self):
         time_now = datetime.now()
@@ -44,19 +44,18 @@ class UserManager(object):
     def register(self, user_id, password):
         api_result = self.jsnDrop.select("tblUser", f"PersonID = '{user_id}'")
         if "DATA_ERROR" in self.jsnDrop.jsnStatus:
-            # Generate a DES number
+            # Generate a DES number, increments by 1.
             record_count = len(self.jsnDrop.allWhere("tblUser", f"Status = 'Registered'"))
             if record_count == 41:
                 des_number = 1
             else:
                 des_number = record_count + 1
-            
-
             # Store user details with des_screen
             result = self.jsnDrop.store("tblUser", [{'PersonID': user_id, 'Password': password,
                                                     'Status': 'Registered', "DESNumber": f"DES_{des_number}"}])
             UserManager.currentUser = user_id
             UserManager.current_status = 'Logged Out'
+            UserManager.DES_screen = f"DES_{des_number}"
 
             result = "Registration Success"
         else:
@@ -136,6 +135,23 @@ class UserManager(object):
                 result = self.jsnDrop.jsnStatus
 
         return result
+    
+    
+        # def populate_data(self):
+        # if UserManager.current_status == "Logged In":
+        #     data = pd.read_csv("data/bd-dec17-births-deaths-by-region.csv")
+        #     df = pd.DataFrame(data)
+        #     for row in df.itertuples():
+        #         api_result = self.jsnDrop.store("tblData",[{
+        #                                                 "Period":row.Period,
+        #                                                 "Birth_Death":row.Birth_Death,
+        #                                                 "Region":row.Region,
+        #                                                 "Count":row.Count}])     
+        #     if not("ERROR" in api_result):
+        #         UserManager.current_status = "Logged Out"
+        #         result = "Logged Out"
+        #     else:
+        #         result = self.jsnDrop.jsnStatus
 
 
     def test_api(self):
