@@ -23,8 +23,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 class DES_View(object):
-    des_list = []
-    current_des = 0
     
     def __init__(self):
         
@@ -39,8 +37,6 @@ class DES_View(object):
                         'Bar Chart':(ce.bar_chart,{}),'Histogram':(ce.histogram,{'title':'Our Histogram Name'}),
                         'Scatter Plots':(ce.scatter_plots,{}),'Stack Plot':(ce.stack_plot,{}),
                         'Pie Chart 1':(ce.pie_chart1,{}), 'Pie Chart 2':(ce.pie_chart2,{})}
-        DES_View.current_des +=1 
-        DES_View.des_list += [self]
 
     def have_selected_graph(self,values):
         return len(values['-LISTBOX-']) > 0

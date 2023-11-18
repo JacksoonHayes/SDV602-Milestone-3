@@ -15,6 +15,7 @@ class UserManager(object):
     jsn_tok = "66d863d6-9ae2-43a2-b8b4-fac8deab3689"
     latest_time = None
     DES_screen = None
+    des_list = []
 
     def now_time_stamp(self):
         time_now = datetime.now()
@@ -75,6 +76,8 @@ class UserManager(object):
             UserManager.current_status = "Logged In"
             UserManager.current_user = user_id
             UserManager.current_pass = password
+            UserManager.current_screen = self.jsnDrop.jsnResult[0]['DESNumber']
+            print(f"Current Screen: {UserManager.current_screen}")
             api_result = self.jsnDrop.store("tblUser",[{"PersonID":user_id,"Password":password,"Status":"Logged In"}])
             result = "Login Success"
         return result
@@ -84,10 +87,17 @@ class UserManager(object):
         if UserManager.current_status == "Logged In":
             UserManager.current_screen = DESScreen
             result = "Set Screen"
+            print(f"Set Screen to {DESScreen}")
         else:
             result = "Log in to set the current screen"
         return result
-
+    
+    def get_user_des(self):
+        api_result = self.jsnDrop.select("tblUser",f"PersonID = '{UserManager.current_user}'")
+        if not ('DATA_ERROR' in api_result) :
+            UserManager.DES_screen = self.jsnDrop.jsnResult[0]['DESNumber']
+            result = UserManager.DES_screen
+            return result
 
     def chat(self,message):
         result = None

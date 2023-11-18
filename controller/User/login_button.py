@@ -28,15 +28,13 @@ def accept(event, values, state):
         # put it in user_screen below.
 
         if login_result == "Login Success":
-            # user_screen = 
-            # UserManager.current_screen =
-            
             des_obj = DES_View()
+            user_screen = UserManager.get_user_des(a_user_manager)
+            a_user_manager.des_list.append(user_screen)
             des_obj.set_up_layout()
             des_obj.render()
             des_obj.accept_input()
-            UserManager.set_current_DES(des_obj)
-            des_obj.des_list.append(des_obj)
+
 
         
     else:
