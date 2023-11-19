@@ -1,6 +1,8 @@
 <!-- GETTING STARTED -->
 ## Data Explorer Application
 
+NOT FINISHED :(
+
 This is an application that allows you to upload and analyze data from a csv file. The application is built using Python, PySimpleGUI and Matplotlib.
 Uploaded CSV files and user login credentials are stored in a JSONdrop database.
 

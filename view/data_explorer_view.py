@@ -1,3 +1,25 @@
+
+"""
+This file contains the implementation of the DES_View class, which represents the view component of the Data Explorer Screen.
+The DES_View class is responsible for creating and managing the graphical user interface (GUI) of the Data Explorer Screen.
+It utilizes various libraries such as PySimpleGUI, Matplotlib, and NumPy to display and interact with data visualizations.
+
+The DES_View class provides methods for updating the displayed data, drawing figures, handling user interactions, and managing the chat functionality.
+It also includes a set of controls and components that allow users to select different types of data visualizations and interact with them.
+
+The file also imports other modules and classes related to the Data Explorer Screen, such as ChartExamples, exit_button, figure_list_select, new_des, open_csv, chat_button, and uploader.
+"""
+
+import threading
+import signal
+import numpy as np
+import matplotlib.pyplot as plt
+import PySimpleGUI as sg
+import inspect
+import matplotlib
+import sys
+sys.dont_write_bytecode = True
+
 import threading
 import signal
 import numpy as np

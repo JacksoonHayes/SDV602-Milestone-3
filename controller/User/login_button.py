@@ -23,10 +23,6 @@ def accept(event, values, state):
         login_result = a_user_manager.login(user_name,password)
         print(f"Login result: {login_result}")
         
-        
-        # <<<<<<<<<<<< function that selects user des number record self.jsnDrop.select("tblUser", f"PersonID = '{user_id}'") >>>>>>>>>>>>>>>>
-        # put it in user_screen below.
-
         if login_result == "Login Success":
             des_obj = DES_View()
             user_screen = UserManager.get_user_des(a_user_manager)
