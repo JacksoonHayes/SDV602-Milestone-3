@@ -9,8 +9,6 @@ import controller.DES.open_csv as open_csv
 import controller.DES.pan_left as pan_left
 import controller.DES.pan_right as pan_right
 import controller.User.chat_button as chat_button
-from view.chat_view import ChatView
-import view.chat_view as chat_view
 from model.user_manager import UserManager 
 import controller.Upload.uploader as uploader
 import PySimpleGUI as sg
@@ -18,6 +16,11 @@ import inspect
 import matplotlib
 matplotlib.use('TkAgg')
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from model.network.jsn_drop_service import jsnDrop
+from threading import Thread
+import threading
+import signal
+
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -25,6 +28,7 @@ import matplotlib.pyplot as plt
 class DES_View(object):
     
     def __init__(self):
+        self.jsnDrop = jsnDrop(UserManager.jsn_tok,"https://newsimland.com/~todd/JSON")
         
         self.window = None
         self.figure_agg = None
@@ -37,6 +41,13 @@ class DES_View(object):
                         'Bar Chart':(ce.bar_chart,{}),'Histogram':(ce.histogram,{'title':'Our Histogram Name'}),
                         'Scatter Plots':(ce.scatter_plots,{}),'Stack Plot':(ce.stack_plot,{}),
                         'Pie Chart 1':(ce.pie_chart1,{}), 'Pie Chart 2':(ce.pie_chart2,{})}
+        self.values = None
+        # The following will only work if we have logged in!
+        # self.JsnDrop = UserManager.this_user_manager.jsnDrop
+        # Thread for chat
+        self.chat_count = 0
+        self.exit_event = threading.Event()
+        signal.signal(signal.SIGINT, self.signal_handler)
 
     def have_selected_graph(self,values):
         return len(values['-LISTBOX-']) > 0
@@ -70,8 +81,6 @@ class DES_View(object):
             self.update_component_text('data_file_name',the_file_name)
             self.fig_dict[choice] = (func,args)
             self.figure_list_draw(values)
-
-
 
         
     def draw_figure(self,canvas, figure):
@@ -112,7 +121,61 @@ class DES_View(object):
             self.update_component_text('data_file_name',the_file_name)
             
             self.figure_agg = self.draw_figure(self.window['-CANVAS-'].TKCanvas, fig)  # draw the figure
-    
+
+    def signal_handler(self,signum, frame):
+        self.exit_event.set()   
+
+    def set_up_chat_thread(self):
+        UserManager.chat_thread = Thread(target=self.chat_display_update,args=(UserManager,))
+        UserManager.chat_thread.setDaemon(True)
+        UserManager.stop_thread = False
+        UserManager.chat_thread.start()
+
+    def chat_display_update(self, UserManager):
+        # Check there is a window before sending an event to it
+        if self.window is not None:
+            self.chat_count += 1
+            # Go to network service to get the Chats
+            result = self.jsnDrop.select("tblChat", f"DESNumber = '{UserManager.current_screen}'")
+            print(result)
+
+            # Check if result is a list of dictionaries and has data to process
+            if isinstance(result, list) and all(isinstance(item, dict) and 'Time' in item for item in result):
+                messages = ""
+                # Sort the result records by the Time field
+                sorted_chats = sorted(result, key=lambda k: k['Time'])
+
+                for record in sorted_chats:
+                    new_display = ""
+                    if UserManager.latest_time is not None:
+                        # Only add if the record's time is after the latest_time
+                        if record['Time'] > UserManager.latest_time:
+                            new_display = f"{record['PersonID']}[{record['Chat']}]\n"
+                    else:
+                        new_display = f"{record['PersonID']}[{record['Chat']}]\n"
+
+                    messages += new_display
+
+                UserManager.chat_list = [messages]
+
+                # Keep number of messages down to 5
+                if len(UserManager.chat_list) > 5:
+                    UserManager.chat_list = UserManager.chat_list[-5:]
+
+                # Makes a string of messages to update the display
+                Update_Messages = ""
+                for message in UserManager.chat_list:
+                    Update_Messages += message
+
+                # Send the Event back to the window if we haven't already stopped
+                if not UserManager.stop_thread:
+                    # Time stamp the latest record
+                    latest_record = sorted_chats[-1]
+                    UserManager.latest_time = latest_record['Time']
+
+                    # Send the event back to the window
+                    self.window.write_event_value('-CHATTHREAD-', Update_Messages)
+   
 
     def set_up_layout(self,**kwargs):
         
@@ -207,8 +270,8 @@ class DES_View(object):
         # create the form and show it without the plot
         if self.layout != [] :
             self.window =sg.Window('Data Explorer Screen', self.layout, grab_anywhere=False, finalize=True, background_color='#8A8A8A')
-        ChatView().set_up_chat_thread()
-            
+        # self.set_up_chat_thread()
+        
 
     def accept_input(self):
  
@@ -227,14 +290,14 @@ class DES_View(object):
                         
                         # Lock until the Window is updated
                         UserManager.stop_thread = True
-
+                        
                         self.window['ChatDisplay'].Update(values[event])
                         # This should always be True here
                         if UserManager.stop_thread:
                             # Unlock so we can start another long task thread
                             UserManager.stop_thread = False
                             # Start another long task thread
-                            ChatView.set_up_chat_thread()
+                            self.set_up_chat_thread()
                             
                     for accept_control in self.controls:
                         keep_going = accept_control(event,values,{'view':self})
