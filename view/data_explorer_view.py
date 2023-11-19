@@ -1,29 +1,27 @@
+import threading
+import signal
+import numpy as np
+import matplotlib.pyplot as plt
+import PySimpleGUI as sg
+import inspect
+import matplotlib
 import sys
 sys.dont_write_bytecode = True
-from typing import Dict
+
 import view.ChartExamples as ce 
 import controller.DES.exit_button as exit_button
 import controller.DES.figure_list_select as figure_list_select
 import controller.DES.new_des as new_des
 import controller.DES.open_csv as open_csv
-import controller.DES.pan_left as pan_left
-import controller.DES.pan_right as pan_right
 import controller.User.chat_button as chat_button
-from model.user_manager import UserManager 
 import controller.Upload.uploader as uploader
-import PySimpleGUI as sg
-import inspect
-import matplotlib
-matplotlib.use('TkAgg')
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+
+from model.user_manager import UserManager 
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg,  NavigationToolbar2Tk
 from model.network.jsn_drop_service import jsnDrop
 from threading import Thread
-import threading
-import signal
 
-
-import numpy as np
-import matplotlib.pyplot as plt
+matplotlib.use('TkAgg')
 
 class DES_View(object):
     
@@ -83,19 +81,28 @@ class DES_View(object):
             self.figure_list_draw(values)
 
         
-    def draw_figure(self,canvas, figure):
+    def draw_figure(self, canvas, figure):
         figure_canvas_agg = FigureCanvasTkAgg(figure, canvas)
         figure_canvas_agg.draw()
+
+        # Check if a toolbar already exists and delete or hide it
+        if hasattr(self, 'toolbar'):
+            self.toolbar.destroy()
+
+        self.toolbar = NavigationToolbar2Tk(figure_canvas_agg, self.window['-CANVAS TOOLS-'].TKCanvas)
+        self.toolbar.update()
         figure_canvas_agg.get_tk_widget().pack(side='top', fill='both', expand=1)
+
         return figure_canvas_agg
 
-    def delete_figure_agg(self,figure_agg):
-        
+    def delete_figure_agg(self, figure_agg):
         if self.figure_agg:
             self.figure_agg.get_tk_widget().forget()
         plt.close('all')
 
-
+        # Also delete or hide the toolbar
+        if hasattr(self, 'toolbar'):
+            self.toolbar.destroy()
 
     def figure_list_draw(self,values):
         
@@ -217,27 +224,11 @@ class DES_View(object):
         
         # COL 2
         self.components['canvas'] = sg.Canvas(size=(figure_w, figure_h), key='-CANVAS-')
-        
-        self.components['zoom_in'] = sg.Button("➕", size=(7, 1))        
-        self.controls += [exit_button.accept]
-        
-        self.components['zoom_out'] = sg.Button("➖", size=(7, 1))        
-        self.controls += [exit_button.accept]
-        
-        self.components['pan_left'] = sg.Button("<", size=(7, 1))        
-        self.controls += [pan_right.accept]
-        
-        self.components['pan_right'] = sg.Button(">", size=(7, 1))        
-        self.controls += [pan_left.accept]
+        self.components['toolbar'] = sg.Canvas(size=(figure_w, 40), key='-CANVAS TOOLS-')
         
         col_canvas = [
             [self.components['canvas']],
-            [self.components['pan_left'],
-            sg.Text('', pad=((30, 0), 0), background_color='#3F3F3F'),
-            self.components['zoom_out'],
-            self.components['zoom_in'],
-            sg.Text('', pad=((0, 30), 0), background_color='#3F3F3F'),
-            self.components['pan_right']]
+            [self.components['toolbar']]
         ]
         
         self.components['canvas_col'] = sg.Col(col_canvas, element_justification='c', background_color='#3F3F3F')
@@ -270,7 +261,7 @@ class DES_View(object):
         # create the form and show it without the plot
         if self.layout != [] :
             self.window =sg.Window('Data Explorer Screen', self.layout, grab_anywhere=False, finalize=True, background_color='#8A8A8A')
-        # self.set_up_chat_thread()
+        # self.set_up_chat_thread(
         
 
     def accept_input(self):

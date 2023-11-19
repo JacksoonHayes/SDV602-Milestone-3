@@ -12,9 +12,6 @@ def accept( event, values,state):
     if event in (sg.WIN_CLOSED, 'Exit'):   
         keep_going = False
         
-        # this bit is a thought #
-        #DES_View.current_des +=1 
-        #DES_View.des_list.remove(state['view'])
     else:
         keep_going = True
 

@@ -19,13 +19,9 @@ This could be an equivalent to a Router ...
 
 """
 import sys
-from model.network.jsn_drop_service import jsnDrop
-from view import chat_view
 sys.dont_write_bytecode = True
 from view.data_explorer_view import DES_View
 from view.user_login_view import LoginView
-# from view.chat_view import ChatView
-# from model import user_manager
 
 
 

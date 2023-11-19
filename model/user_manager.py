@@ -124,7 +124,7 @@ class UserManager(object):
          if UserManager.current_status == "Logged In" and UserManager.current_screen is not None:
             des_screen = UserManager.current_screen  
             if not(des_screen is None):
-                api_result = self.jsnDrop.select("tblChat",f"DESNumber = '{des_screen}'")
+                api_result = self.jsnDrop.allWhere("tblChat",f"DESNumber = '{des_screen}'")
                 if not ('DATA_ERROR' in api_result) :
                     UserManager.chat_list = self.jsnDrop.jsnResult
                     result = UserManager.chat_list

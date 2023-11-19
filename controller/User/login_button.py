@@ -35,7 +35,6 @@ def accept(event, values, state):
             des_obj.render()
             des_obj.accept_input()
 
-
         
     else:
         keep_going = True
