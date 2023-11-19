@@ -62,6 +62,7 @@ class LoginView(object):
             keep_going = True
             
             while keep_going == True:
+
                 event, values = self.window.read()
                 for accept_control in self.controls:
                     keep_going = accept_control(event,values,{'view':self})

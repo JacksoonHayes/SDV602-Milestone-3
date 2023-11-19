@@ -148,40 +148,34 @@ class DES_View(object):
 
             # Check if result is a list of dictionaries and has data to process
             if isinstance(result, list) and all(isinstance(item, dict) and 'Time' in item for item in result):
-                messages = ""
                 # Sort the result records by the Time field
                 sorted_chats = sorted(result, key=lambda k: k['Time'])
 
                 for record in sorted_chats:
-                    new_display = ""
-                    if UserManager.latest_time is not None:
-                        # Only add if the record's time is after the latest_time
-                        if record['Time'] > UserManager.latest_time:
-                            new_display = f"{record['PersonID']}[{record['Chat']}]\n"
-                    else:
-                        new_display = f"{record['PersonID']}[{record['Chat']}]\n"
+                    if UserManager.latest_time is None or record['Time'] > UserManager.latest_time:
+                        # Format and append new message to chat list
+                        new_message = f"{record['PersonID']}[{record['Chat']}]\n"
+                        UserManager.chat_list.append(new_message)
 
-                    messages += new_display
-
-                UserManager.chat_list = [messages]
-
-                # Keep number of messages down to 5
-                if len(UserManager.chat_list) > 5:
-                    UserManager.chat_list = UserManager.chat_list[-5:]
-
-                # Makes a string of messages to update the display
-                Update_Messages = ""
-                for message in UserManager.chat_list:
-                    Update_Messages += message
-
-                # Send the Event back to the window if we haven't already stopped
-                if not UserManager.stop_thread:
-                    # Time stamp the latest record
+                # Update latest_time with the timestamp of the latest message
+                if sorted_chats:
                     latest_record = sorted_chats[-1]
                     UserManager.latest_time = latest_record['Time']
 
+                # Keep number of messages down to a desired history length (e.g., 5)
+                history_length = 5
+                if len(UserManager.chat_list) > history_length:
+                    UserManager.chat_list = UserManager.chat_list[-history_length:]
+
+                # Makes a string of messages to update the display
+                Update_Messages = ''.join(UserManager.chat_list)
+
+                # Send the Event back to the window if we haven't already stopped
+                if not UserManager.stop_thread:
                     # Send the event back to the window
                     self.window.write_event_value('-CHATTHREAD-', Update_Messages)
+
+
    
 
     def set_up_layout(self,**kwargs):
@@ -203,18 +197,10 @@ class DES_View(object):
         self.components['uploader'] = sg.Button(button_text="Upload CSV",size=(10, 2))
         self.controls += [uploader.accept]
         
-        self.components['new_des'] = sg.Button(button_text="New DES",size=(15, 2))
-        self.controls += [new_des.accept]
-        
         self.components['select_file'] = sg.Button(button_text="Open CSV",size=(10, 2))
         self.controls += [open_csv.accept]
-
-        self.components['exit_button'] = sg.Exit(size=(5, 2))        
-        self.controls += [exit_button.accept]
         
-
         col_listbox = [
-            [self.components['new_des'], self.components['exit_button']],
             [sg.Text('', pad=(0, (10, 0)), background_color='#3F3F3F')],
             [self.components['figures_list']],
             [self.components['uploader'], self.components['select_file']]
@@ -255,13 +241,20 @@ class DES_View(object):
             self.components['canvas_col'],
             self.components['summary_chat_col']]
         ]
+        
 
     def render(self):
 
         # create the form and show it without the plot
         if self.layout != [] :
             self.window =sg.Window('Data Explorer Screen', self.layout, grab_anywhere=False, finalize=True, background_color='#8A8A8A')
-        # self.set_up_chat_thread(
+        # self.set_up_chat_thread()
+        des_screen = UserManager.current_screen  
+        record = self.jsnDrop.allWhere("tblChat", f"DESNumber = '{des_screen}'")
+        message = f"{record[0]['PersonID']}: {record[0]['Chat']}\n"
+        UserManager.chat_list = message
+        result = UserManager.chat_list
+        self.components['ChatDisplay'].Update(result)
         
 
     def accept_input(self):

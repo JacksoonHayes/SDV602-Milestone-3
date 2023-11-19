@@ -118,19 +118,6 @@ class UserManager(object):
                 result = "Chat sent"
 
         return result
-
-    def get_chat(self):
-
-         if UserManager.current_status == "Logged In" and UserManager.current_screen is not None:
-            des_screen = UserManager.current_screen  
-            if not(des_screen is None):
-                api_result = self.jsnDrop.allWhere("tblChat",f"DESNumber = '{des_screen}'")
-                if not ('DATA_ERROR' in api_result) :
-                    UserManager.chat_list = self.jsnDrop.jsnResult
-                    result = UserManager.chat_list
-                    return result
-                else:
-                    return None
          
     def logout(self):
         result = "Must be 'Logged In' to 'LogOut' "

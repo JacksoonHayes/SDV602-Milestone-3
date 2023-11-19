@@ -21,6 +21,7 @@ def accept( event, values,state):
         print(f"Got Message = {message}  - just testing")
 
         message_result = a_user_manager.chat(message)
+        a_user_manager.chat_list.append(message)
         print(f"Got login result: {message_result}")
 
 
