@@ -33,7 +33,6 @@ sys.dont_write_bytecode = True
 import view.ChartExamples as ce 
 import controller.DES.exit_button as exit_button
 import controller.DES.figure_list_select as figure_list_select
-import controller.DES.new_des as new_des
 import controller.DES.open_csv as open_csv
 import controller.User.chat_button as chat_button
 import controller.Upload.uploader as uploader
